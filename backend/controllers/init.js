@@ -1,5 +1,5 @@
 function initRepo() {
-    console.log("init")
+    console.log("init command called")
 }
 
 module.exports = { initRepo }
