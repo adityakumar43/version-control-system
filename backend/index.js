@@ -25,7 +25,7 @@ yargs(hideBin(process.argv))
         }, commitRepo)
     .command("push", "push commit to S3", {}, pushRepo)
     .command("pull", "pull commit to S3", {}, pullRepo)
-    .command("revert <commitID", "Revert to a specific commit",
+    .command("revert <commitID>", "Revert to a specific commit",
         (yargs) => {
             yargs.positional("commitID", {
                 describe: "Commit ID to revert to",
