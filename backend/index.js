@@ -1,3 +1,12 @@
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const http = require("http");
+
+dotenv.config();
+
 const yargs = require('yargs');
 const { hideBin } = require('yargs/helpers');
 const { initRepo } = require("./controllers/init");
@@ -46,5 +55,11 @@ yargs(hideBin(process.argv))
 
 
 function startServer() {
-    console.log("Server logic called!");
+    const app = express();
+    const port = process.env.PORT || 3000;
+
+    app.use(bodyParser.json());
+    app.use(express.json());
+
+    const mongoURI = process.env.MONGODB_URI;
 }
