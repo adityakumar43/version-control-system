@@ -15,6 +15,7 @@ const { commitRepo } = require('./controllers/commit');
 const { pushRepo } = require('./controllers/push');
 const { pullRepo } = require('./controllers/pull');
 const { revertRepo } = require('./controllers/revert');
+const { error } = require("console");
 
 yargs(hideBin(process.argv))
     .command("start", "Starts a new server", {}, startServer)
@@ -62,4 +63,9 @@ function startServer() {
     app.use(express.json());
 
     const mongoURI = process.env.MONGODB_URI;
+
+    mongoose.connect(mongoURI)
+        .then(() => console.log("MongoDB connected!"))
+        .catch((error) => console.error("unable to connect :", error))
+
 }
