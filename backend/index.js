@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const http = require("http");
 const { Server } = require("socket.io");
+const mainRouter = require("./routes/main.router");
 
 dotenv.config();
 
@@ -70,10 +71,9 @@ function startServer() {
         .catch((error) => console.error("unable to connect :", error))
 
     app.use(cors({ origin: "*" }));
-    app.get("/", (req, res) => {
-        res.send("Welcome");
-    });
-
+    
+    app.use("/", mainRouter);
+    
     const httpServer = http.createServer(app);
     const io = new Server(httpServer, {
         cors: {
