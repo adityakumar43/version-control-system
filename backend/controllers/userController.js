@@ -32,7 +32,7 @@ async function signup(req, res) {
 
         const user = await usersCollections.findOne({ username });
         if (user) {
-            return res.status(400).json({ message: "User already exists !" })
+            return res.status(400).json({ message: "User already exists !" });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -58,8 +58,31 @@ async function signup(req, res) {
     };
 };
 
-const login = (req, res) => {
-    res.send("Logging in!");
+async function login(req, res) {
+    const { email, password } = req.body;
+    try {
+        await connectClient();
+        const db = client.db("githubclone");
+        const usersCollections = db.collection("users");
+
+        const user = await usersCollections.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message: "Invalid credentials !" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+        res.json({ token, userId: user._id });
+
+    } catch (error) {
+        console.error("Error during login :", error.message);
+        res.status(500).send("Server error !");
+    }
 };
 
 const getUserProfile = (req, res) => {
