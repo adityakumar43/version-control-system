@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const dotenv = require("dotenv");
+var objectId = require("mongodb").ObjectId;
 
 dotenv.config();
 const uri = process.env.MONGODB_URI;
@@ -19,9 +20,7 @@ async function connectClient() {
 }
 
 
-const getAllUsers = (req, res) => {
-    res.send("All users fetched!");
-};
+
 
 async function signup(req, res) {
     const { username, password, email } = req.body;
@@ -85,15 +84,51 @@ async function login(req, res) {
     }
 };
 
-const getUserProfile = (req, res) => {
-    res.send("Profile fetched!");
+
+async function getAllUsers(req, res) {
+    try {
+        await connectClient();
+        const db = client.db("githubclone");
+        const usersCollections = db.collection("users");
+
+        const users = await usersCollections.find({}).toArray();
+        res.json(users);
+    } catch (error) {
+        console.error("Error during fetching :", error.message);
+        res.status(500).send("Server error !");
+    }
 };
 
-const updateUserProfile = (req, res) => {
+
+async function getUserProfile(req, res) {
+    const currentID = req.params.id;
+    try {
+        await connectClient();
+        const db = client.db("githubclone");
+        const usersCollections = db.collection("users");
+
+        const user = await usersCollections.findOne({
+            _id: new ObjectId(currentID),
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: "User not found !" });
+        }
+
+        res.send(user, { message: "Profile fetched!" });
+
+    } catch (error) {
+        console.error("Error during fetching :", error.message);
+        res.status(500).send("Server error !");
+    }
+
+};
+
+async function updateUserProfile(req, res) {
     res.send("Profile Updated!");
 };
 
-const deleteUserProfile = (req, res) => {
+async function deleteUserProfile(req, res) {
     res.send("Profile Deleted!");
 };
 
