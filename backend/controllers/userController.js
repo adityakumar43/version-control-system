@@ -152,7 +152,7 @@ async function updateUserProfile(req, res) {
         }
 
         res.send(result);
-        // console.log("findOneAndUpdate result:", result);
+        
 
     } catch (error) {
         console.error("Error during updating :", error.message);
