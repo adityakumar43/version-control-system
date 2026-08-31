@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId, ReturnDocument } = require("mongodb");
 const dotenv = require("dotenv");
 var objectId = require("mongodb").ObjectId;
 
@@ -125,11 +125,62 @@ async function getUserProfile(req, res) {
 };
 
 async function updateUserProfile(req, res) {
-    res.send("Profile Updated!");
+    const currentID = req.params.id;
+    const { email, password } = req.body;
+
+    try {
+        await connectClient();
+        const db = client.db("githubclone");
+        const usersCollections = db.collection("users");
+
+        let updateFields = { email };
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            updateFields.password = hashedPassword;
+        }
+
+        const result = await usersCollections.findOneAndUpdate(
+            {
+                _id: new ObjectId(currentID),
+            },
+            { $set: updateFields },
+            { returnDocument: "after" }
+        );
+        if (!result) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        res.send(result);
+        // console.log("findOneAndUpdate result:", result);
+
+    } catch (error) {
+        console.error("Error during updating :", error.message);
+        res.status(500).send("Server error !");
+    }
 };
 
 async function deleteUserProfile(req, res) {
-    res.send("Profile Deleted!");
+    const currentID = req.params.id;
+    try {
+        await connectClient();
+        const db = client.db("githubclone");
+        const usersCollections = db.collection("users");
+
+        const result = await usersCollections.deleteOne({
+            _id: new ObjectId(currentID),
+        });
+
+        if (result.deleteCount == 0) {
+            return res.status(404).json({ message: "User not found" })
+        };
+
+        res.json({ message: "User Profile Deleted" });
+
+    } catch (error) {
+        console.error("Error during updating :", error.message);
+        res.status(500).send("Server error !");
+    }
 };
 
 module.exports = {
