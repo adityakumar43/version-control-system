@@ -37,7 +37,7 @@ async function updateIssueById( req, res){
         issue.status = status;
 
         await issue.save();
-        res.json(issue);
+        res.json(issue, {message :"Issue updated"});
     } catch (error) {
         console.error("Error during issue updation:", error.message);
         res.status(500).send("Server error");
@@ -45,7 +45,18 @@ async function updateIssueById( req, res){
 };
 
 async function deleteIssueById( req, res){
-    res.send("Issue delete!");
+    const {id} = req.params;
+    try {
+        const issue = Issue .findByIdAndDelete(id);
+        if(!issue){
+            return res.status(404).json({error:"Issue not found!"});
+        };
+        res.json({message: "issue deleted!"});
+
+    } catch (error) {
+        console.error("Error during issue deletion:", error.message);
+        res.status(500).send("Server error");
+    }
 };
 
 async function getAllIssuees( req, res){
