@@ -62,7 +62,7 @@ async function deleteIssueById(req, res) {
 async function getAllIssuees(req, res) {
     const { id } = req.params;
     try {
-        const issues = Issue.find({ repository: id });
+        const issues = await Issue.find({ repository: id });
         if (!issues) {
             return res.status(404).json({ error: "Issue not found!" });
         };
@@ -74,7 +74,19 @@ async function getAllIssuees(req, res) {
 };
 
 async function getIssueById(req, res) {
-    res.send("Issue Details fetched!");
+    const { id } = req.params;
+    
+    try {
+        const issue = await Issue.findById(id);
+        if (!issue) {
+            return res.status(404).json({ error: "Issue not found!" });
+        };
+        
+        res.json(issue);
+    } catch (error) {
+        console.error("Error during issue fetching:", error.message);
+        res.status(500).send("Server error");
+    }
 };
 
 module.exports = {
