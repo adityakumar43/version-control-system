@@ -1,0 +1,41 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    /* padding-bottom: 4px; */
+    margin-bottom: 10px;
+    border-bottom: 1px solid white;
+    align-items: center;
+}
+
+nav img {
+    margin: 20px ;
+    height: 50px;
+    border-radius: 100%;
+}
+
+nav div {
+    display: flex;
+}
+
+nav h3 {
+    /* margin-left: 10px; */
+    color: white;
+    margin-top: 35px;
+
+
+}
+
+nav p {
+    margin-left: 50px;
+    font-weight: bold;
+    color: white;
+}
+
+nav h3:hover,
+nav p:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    text-decoration: none;
+}
