@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './dashboard.css';
 
 const Dashboard = () => {
 
@@ -50,7 +51,7 @@ const Dashboard = () => {
     }, [searchQuery, repositories]);
 
     return (
-        <section>
+        <section id='dashboard'>
             <aside>
                 <h3>Suggested Repositories</h3>
                 {suggestedRepositories.map((repo) => {
