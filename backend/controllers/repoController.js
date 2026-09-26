@@ -76,7 +76,7 @@ async function fetchRepositoryByName(req, res) {
 };
 
 async function fetchRepositoriesForCurrentUser(req, res) {
-    const userId = req.user;
+    const userId = req.params.userID;
     try {
         const repositories = await Repository.find({ owner: userId });
         if (!repositories || repositories.length == 0) {
