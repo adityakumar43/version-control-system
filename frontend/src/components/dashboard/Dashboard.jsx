@@ -14,7 +14,7 @@ const Dashboard = () => {
         const fetchRepositories = async () => {
             try {
                 const response = await fetch(`http://localhost:3000/repo/user/${userId}`);
-                
+
                 const data = await response.json();
 
                 setRepositories(data.repositories);
@@ -65,7 +65,15 @@ const Dashboard = () => {
             </aside>
             <main>
                 <h2>Your Repositories</h2>
-                {repositories.map((repo) => {
+                <div id='search'>
+                    <input
+                        type='text'
+                        value={searchQuery}
+                        placeholder='Search...'
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+                {searchResults.map((repo) => {
                     return (
                         <div key={repo._id}>
                             <h4>{repo.name}</h4>
